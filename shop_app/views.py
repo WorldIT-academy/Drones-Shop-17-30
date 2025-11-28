@@ -1,19 +1,32 @@
-import flask, os, flask_login
+import flask, os, flask_login, math
 from .models import *
-import math
+
+def creat_pagination_buttons(count_page: int, curent_page: int) -> list:
+    if count_page <= 7:
+        return list(range(1, count_page + 1 ))
+    else:
+        numbers = [1]
+        if curent_page >= 4:
+            numbers.append("...")
+        start = min(max(curent_page - 2, 2), count_page - 5)
+        for i in range(5):
+            numbers.append(start + i)
+        if curent_page <= count_page - 4:
+            numbers.append("...")
+        numbers.append(count_page)
+        return numbers
 
 def check_admin() -> bool:
     if flask_login.current_user.is_authenticated and flask_login.current_user.is_admin:
         return True
     return False
 
-COUNT_PRODUCT_PAGE = 3
+PRODUCT_IN_PAGE = 4
 
 def render_catalog():
-    page = int(flask.request.args.get("page", 1))
+    page_num = int(flask.request.args.get('page', 1))
     is_admin = check_admin()
     if flask.request.method == "POST" and is_admin:
-        # for i in range(40):
         new_product = Product(
             name = flask.request.form.get("name"),
             price = flask.request.form.get("price"),
@@ -29,12 +42,19 @@ def render_catalog():
             dst = os.path.abspath(os.path.join(__file__, '..', 'static', 'images', "products", f'{new_product.id}.png'))
         )
     all_products = Product.query.paginate(
-        page = page,
-        per_page = COUNT_PRODUCT_PAGE
+        page = page_num, 
+        per_page= PRODUCT_IN_PAGE
     )
-    last_page = math.ceil(all_products.total / COUNT_PRODUCT_PAGE)
-    # math.ceil - округляет в большую сторону
-    return flask.render_template("catalog.html", admin = is_admin, products = all_products, page = page, last_page = last_page)
+    count_page = math.ceil(all_products.total/PRODUCT_IN_PAGE) 
+    return flask.render_template(
+        "catalog.html", 
+        admin = is_admin, 
+        products = all_products, 
+        page=page_num,
+        count_page=count_page,
+        pagination = creat_pagination_buttons(count_page, page_num)
+    )
+
 
 def delete(id: int):
     if check_admin():

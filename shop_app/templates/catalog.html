@@ -17,7 +17,7 @@ Catalog
         </form>
     {% endif %}
 
-    {% for product in products%}
+    {% for product in products %}
         <h1>{{product.name}} - {{product.price}}$</h1>
         <p>{{product.description}}</p>
         <img src="{{ url_for('shop_app.static', filename = product.get_path() ) }}" alt="" style= "width: 100px">
@@ -31,27 +31,35 @@ Catalog
         {% endif %}
         <a href="/buy/{{product.id}}"><button>Купити</button></a>
     {% endfor%}
-
+    
     <div>
-        {% if page > 1 %}
-            <a href="/catalog?page={{page - 1}} "><button><--</button></a>
+        {% if page > 1%}
+            <a href="/catalog?page={{page-1}}">
+                <button><-</button>    
+            </a>
         {% endif %}
-
-        <a href="/catalog?page=1 "><button>1</button></a>
-        <button>...</button>
-        {% for num_page in range(5) %}
-            <a href="/catalog?page={{ page + num_page - 2 }} "><button>{{page + num_page - 2}}</button></a>
+        
+        {% for pag_btn in pagination%}
+            {% if pag_btn == "..."%}
+                <button>...</button>   
+            {% else %}
+                <a href="/catalog?page={{pag_btn}}">
+                    {% if pag_btn == page %}
+                        <button style="background-color: rgba(255, 196, 0, 0.5);">{{pag_btn}}</button> 
+                    {% else %}
+                        <button>{{pag_btn}}</button> 
+                    {% endif %}
+                </a>
+            {%endif%}
         {% endfor %}
-        <button>...</button>
-        <a href="/catalog?page={{last_page}} "><button>{{last_page}}</button></a>
         
-        
-        {% if page < last_page %}
-            <a href="/catalog?page={{page + 1}} "><button>--></button></a>
+        {% if page < count_page %}
+            <a href="/catalog?page={{page+1}}">
+                <button>-></button>    
+            </a>
         {% endif %}
     </div>
 {%endblock%}
 
 {%block links %}
-
 {%endblock%}
