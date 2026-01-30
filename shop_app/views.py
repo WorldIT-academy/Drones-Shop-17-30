@@ -108,3 +108,29 @@ def buy(id: int):
         else:
             response.set_cookie('list_products', str(id))
     return response
+
+def render_cart():
+    return flask.render_template(
+        'cart.html',
+        count_cart = count_cart_product(),
+        products = get_product()
+    )
+
+def get_product():
+    # [Pr1, Pr2, Pr3, Pr1]
+    # [[Pr1, 1], [Pr2, 3], [Pr3, 1]]
+    id_text = flask.request.cookies.get("list_products")
+    if id_text == None:
+        return []
+    list_id = id_text.split("|")
+    list_products = []
+    for product_id in list_id:
+        product = Product.query.get(int(product_id))
+        list_products.append(product)
+    unique_list_product = set(list_products)
+    final_list = []
+    for un_product in unique_list_product:
+        count = list_products.count(un_product)
+        final_list.append([un_product, count])
+    # set - колекція унікальних елементів ( список, де елементи не повторюються )
+    return final_list

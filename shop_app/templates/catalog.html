@@ -78,7 +78,7 @@ Catalog
             
             {% if page < count_page %}
                 <a class="pagination" href="/catalog?page={{page+1}}">
-                     <img src="{{ url_for('shop_app.static', filename = 'images/arrowR.png' ) }}" alt="">
+                    <img src="{{ url_for('shop_app.static', filename = 'images/arrowR.png' ) }}" alt="">
                 </a>
             {%else%}
                 <div class = "pagination disabled">

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Товари</h1>
+    {% for product, count in products %}
+        <div class="product">
+            <img src="{{ url_for('shop_app.static', filename = product.get_path() ) }}" alt="" style="width: 100px;">
+            <div class="text">
+                <h5>{{product.name}}</h5>
+                <p>{{product.price}} ₴</p>
+                <p>count: {{count}}</p>
+            </div>
+            <a href="/buy/{{product.id}}">+</a>
+            <a href="/remove/{{product.id}}">-</a>
+            <a href="/delete/{{product.id}}">delete</a>
+        </div>
+    {% endfor %}
+{% endblock %}

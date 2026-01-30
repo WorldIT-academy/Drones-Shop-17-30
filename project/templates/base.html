@@ -18,7 +18,7 @@
                 </div> 
                 <a href="/"><img id = "logo" src="{{ url_for('static', filename = 'images/Logo.svg') }}" alt=""></a>
                 <div id="profile">
-                    <a href="#" id="cart-block">
+                    <a href="/cart" id="cart-block">
                         <img src="{{ url_for('static', filename = 'images/Cart.svg') }}" alt="">
                         {% if count_cart > 0 %}
                             {% if count_cart >= 10 %}
@@ -57,7 +57,7 @@
                     <a href="/catalog">Каталог</a>
                     <a href="#">Про нас</a>
                     <a href="#">Контакти</a>
-                    <a href="#">Кошик</a>
+                    <a href="/cart">Кошик</a>
                     <a href="#">Кабінет</a>
                 </nav>
                 <div id="license">
