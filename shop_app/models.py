@@ -10,8 +10,11 @@ class Product(DB.Model):
 
     def __str__(self):
         return f'<Product {self.name}, id - {self.id}, price - {self.price}> '
+    
+    def get_price_discount(self):
+        return round(self.price * (1 - self.discount / 100))
+
     def get_path(self):
         if self.id < 10:
             return f'images/products/{self.id}.png'
-        else:
-            return f'images/products/9.png'
+        return f'images/products/9.png'

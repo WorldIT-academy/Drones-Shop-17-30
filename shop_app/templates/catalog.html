@@ -33,9 +33,16 @@ Catalog
                     <img src="{{ url_for('shop_app.static', filename = product.get_path() ) }}" alt="">
                     <div class="text">
                         <h5>{{product.name}}</h5>
-                        <p>{{product.price}} ₴</p>
+                        <p>
+                            {% if product.discount %}
+                                <span style="text-decoration: line-through;">{{product.price}} ₴</span>
+                                <span style="color: red;">{{product.get_price_discount() }} ₴</span>
+                            {% else%}
+                                {{product.price}} ₴
+                            {% endif%}
+                        </p>
                     </div>
-                    <a href="/buy/{{product.id}}" class="buy-button"><img src="{{ url_for('shop_app.static', filename = 'images/buy.svg' ) }}" alt=""></a>
+                    <a href="/buy/{{product.id}}?next=catalog" class="buy-button"><img src="{{ url_for('shop_app.static', filename = 'images/buy.svg' ) }}" alt=""></a>
                 </div>
                 {% if admin %}
                     <a href="/delete/{{ product.id }}">

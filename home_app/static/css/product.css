@@ -60,6 +60,9 @@
 
 .product .text p{
     font-size: 1.6vh;
+    gap: 1.1vw;
+    display: flex;
+    flex-direction: row;
 }
 
 /* 

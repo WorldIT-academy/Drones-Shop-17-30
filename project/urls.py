@@ -10,5 +10,7 @@ shop_app.shop_app.add_url_rule(rule = '/delete/<int:id>', view_func = shop_app.d
 shop_app.shop_app.add_url_rule(rule = '/change/<int:id>', view_func = shop_app.render_change, methods = ["GET", "POST"])
 shop_app.shop_app.add_url_rule(rule = '/buy/<int:id>', view_func = shop_app.buy, methods = ["GET"])
 shop_app.shop_app.add_url_rule(rule = '/cart', view_func = shop_app.render_cart, methods = ["GET"])
+shop_app.shop_app.add_url_rule(rule = '/delete_cart/<int:id>', view_func = shop_app.delete_cart, methods = ["GET"])
+
 # Path-параметри - обов'язкові параметри шляху (query-параметри не обов'язкові). 
 # Для використання в urls "посилання/<int:назва>"

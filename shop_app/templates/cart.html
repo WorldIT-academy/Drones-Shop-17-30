@@ -7,12 +7,21 @@
             <img src="{{ url_for('shop_app.static', filename = product.get_path() ) }}" alt="" style="width: 100px;">
             <div class="text">
                 <h5>{{product.name}}</h5>
-                <p>{{product.price}} ₴</p>
+                <p>
+                    {% if product.discount %}
+                        <span style="text-decoration: line-through;">{{product.price}} ₴</span>
+                        <span style="color: red;">{{product.get_price_discount() }} ₴</span>
+                    {% else%}
+                        {{product.price}} ₴
+                    {% endif%}
+                </p>
                 <p>count: {{count}}</p>
             </div>
-            <a href="/buy/{{product.id}}">+</a>
-            <a href="/remove/{{product.id}}">-</a>
-            <a href="/delete/{{product.id}}">delete</a>
+            <a href="/buy/{{product.id}}?next=cart">+</a>
+            <br>
+            <a href="/delete_cart/{{product.id}}?count=1">-</a>
+            <br>
+            <a href="/delete_cart/{{product.id}}">delete</a>
         </div>
     {% endfor %}
 {% endblock %}

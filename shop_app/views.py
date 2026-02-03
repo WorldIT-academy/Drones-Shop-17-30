@@ -3,7 +3,7 @@ from .models import *
 
 def count_cart_product():
     products = flask.request.cookies.get("list_products")
-    if products is None:
+    if not products:
         return 0
     list_id = products.split("|")
     return len(list_id)
@@ -93,20 +93,36 @@ def render_change(id: int):
             return flask.redirect('/catalog')
         return flask.render_template("change.html", product = product, count_cart = count_cart_product())
         
-def buy(id: int):
+def get_products_from_cart(id):
     product = Product.query.get(id)
-    response = flask.make_response(flask.redirect('/catalog'))
-    # flask.make_response - функція яка створює відповідь користувачу ( для змінення його cookie ). 
-    # В дужках потрібно redirect або render_template
-    
-    # flask.request.cookies.get('назва') - отримує cookie
-    # response.set_cookie('назва', 'значення') - вказує cookie
     if product:
         products = flask.request.cookies.get('list_products')
-        if products:
-            response.set_cookie('list_products', products + "|" + str(id))
-        else:
-            response.set_cookie('list_products', str(id))
+        return products
+    else:
+        return None
+    
+
+def buy(id: int):
+    next = flask.request.args.get("next")
+    response = flask.make_response(flask.redirect(f'/{next}'))
+
+    products = get_products_from_cart(id)
+    if products:
+        response.set_cookie('list_products', products + "|" + str(id))
+    else:
+        response.set_cookie('list_products', str(id))
+    return response
+
+def delete_cart(id: int):
+    count = int(flask.request.args.get("count", -1))
+    response = flask.make_response(flask.redirect('/cart'))
+    products = get_products_from_cart(id)
+    if products:
+        new_id = products.replace(f"{id}|", "", count)
+        list_id = products.split("|")
+        if len(list_id) == 1 and list_id[0] == str(id):
+            new_id = ""
+        response.set_cookie("list_products", new_id)
     return response
 
 def render_cart():
@@ -117,20 +133,17 @@ def render_cart():
     )
 
 def get_product():
-    # [Pr1, Pr2, Pr3, Pr1]
-    # [[Pr1, 1], [Pr2, 3], [Pr3, 1]]
     id_text = flask.request.cookies.get("list_products")
-    if id_text == None:
+    if not id_text:
         return []
     list_id = id_text.split("|")
     list_products = []
     for product_id in list_id:
         product = Product.query.get(int(product_id))
         list_products.append(product)
-    unique_list_product = set(list_products)
+    unique_list_product = list(dict.fromkeys(list_products))
     final_list = []
     for un_product in unique_list_product:
         count = list_products.count(un_product)
         final_list.append([un_product, count])
-    # set - колекція унікальних елементів ( список, де елементи не повторюються )
     return final_list
