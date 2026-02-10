@@ -1,5 +1,6 @@
-import flask, os, flask_login, math
+import flask, os, flask_login, math, requests
 from .models import *
+from project.loadenv import get_env
 
 def count_cart_product():
     products = flask.request.cookies.get("list_products")
@@ -63,7 +64,6 @@ def render_catalog():
         count_cart = count_cart_product()
     )
 
-
 def delete(id: int):
     if check_admin():
         product = Product.query.get(id)
@@ -101,8 +101,7 @@ def get_products_from_cart(id):
     else:
         return None
     
-
-def buy(id: int):
+def add_cart(id: int):
     next = flask.request.args.get("next")
     response = flask.make_response(flask.redirect(f'/{next}'))
 
@@ -118,10 +117,13 @@ def delete_cart(id: int):
     response = flask.make_response(flask.redirect('/cart'))
     products = get_products_from_cart(id)
     if products:
+        products += '|'
         new_id = products.replace(f"{id}|", "", count)
         list_id = products.split("|")
         if len(list_id) == 1 and list_id[0] == str(id):
             new_id = ""
+        if len(new_id) > 0 and new_id[-1] == '|':
+            new_id = new_id[:-1]
         response.set_cookie("list_products", new_id)
     return response
 
@@ -129,7 +131,8 @@ def render_cart():
     return flask.render_template(
         'cart.html',
         count_cart = count_cart_product(),
-        products = get_product()
+        products = get_product(),
+        prices =  count_price()
     )
 
 def get_product():
@@ -147,3 +150,16 @@ def get_product():
         count = list_products.count(un_product)
         final_list.append([un_product, count])
     return final_list
+
+def count_price() -> dict:
+    list_product = get_product()
+    price_without_discount = 0
+    price_with_discount = 0
+    for product, count in list_product:
+        price_without_discount += product.price * count
+        price_with_discount += product.get_price_discount() * count
+    return {
+        "price": price_without_discount,
+        "discount": price_with_discount - price_without_discount,
+        "final_price": price_with_discount
+    }

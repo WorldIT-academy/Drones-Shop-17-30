@@ -17,11 +17,16 @@
                 </p>
                 <p>count: {{count}}</p>
             </div>
-            <a href="/buy/{{product.id}}?next=cart">+</a>
+            <a href="/add_cart/{{product.id}}?next=cart">+</a>
             <br>
             <a href="/delete_cart/{{product.id}}?count=1">-</a>
             <br>
             <a href="/delete_cart/{{product.id}}">delete</a>
         </div>
     {% endfor %}
+    <div>
+        <h2>Загальна сума {{prices.price}}</h2>
+        <h2>Заощаджено {{prices.discount}}</h2>
+        <h2>Зі знижкою {{prices.final_price}}</h2>
+    </div>
 {% endblock %}

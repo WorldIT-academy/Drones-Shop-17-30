@@ -42,7 +42,7 @@ Catalog
                             {% endif%}
                         </p>
                     </div>
-                    <a href="/buy/{{product.id}}?next=catalog" class="buy-button"><img src="{{ url_for('shop_app.static', filename = 'images/buy.svg' ) }}" alt=""></a>
+                    <a href="/add_cart/{{product.id}}?next=catalog" class="buy-button"><img src="{{ url_for('shop_app.static', filename = 'images/buy.svg' ) }}" alt=""></a>
                 </div>
                 {% if admin %}
                     <a href="/delete/{{ product.id }}">
